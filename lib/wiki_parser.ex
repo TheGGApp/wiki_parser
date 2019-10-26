@@ -15,6 +15,7 @@ defmodule WikiParser do
       get("/w/api.php?action=query&list=search&utf8=&format=json&srprop=snippet&srsearch=#{URI.encode(game)}%20video%20game")
       |> get_search_results()
       |> filter_search_results(game)
+      |> handle_search_result
   end
 
   def get_search_results({:ok, response}) do
@@ -49,6 +50,18 @@ defmodule WikiParser do
     else
       filtered_results
     end
+  end
+
+  def handle_search_result([]), do: {:error, "No games found"}
+
+  def handle_search_result([game | _ ]) do
+    game =
+      game
+      |> Map.take(["pageid", "snippet", "title"])
+      |> Map.put("title", String.replace(Map.get(game, "title"), " (video game)", ""))
+      |> Map.put("snippet", HtmlSanitizeEx.strip_tags(Map.get(game, "snippet")))
+
+    {:ok, game}
   end
 
 
