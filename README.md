@@ -1,6 +1,7 @@
 # WikiParser
 
 **TODO: Add description**
+**TODO: Learn Regex, Hex, Elixer & Erlang**
 
 ## Installation
 
